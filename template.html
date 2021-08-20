@@ -26,7 +26,7 @@
                     <div class="card-body">
                       <h5 class="card-title">{{book_description.title}}</h5>
                       <p class="card-text">{{book_description.author}}</p>
-                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                      <p class="card-text"><a href="media/{{book_description.book_path|urlencode}}" target='_blank'>Читать</a></p>
                     </div>
                   </div>
                 </div>
@@ -35,7 +35,7 @@
           {% endfor %}
           <div class="w-100"></div>
         {% endfor %}
-        
+
       </div>
     </div>
     {% for book_description in books_description %}
