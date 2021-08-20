@@ -1,8 +1,17 @@
 import os
 import json
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from functools import partial
 
+from livereload import Server
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+
+
+def on_reload(env, books_description):
+    template = env.get_template('template.html')
+    rendered_page = template.render(books_description=books_description)
+
+    with open('index.html', 'w', encoding='utf-8') as file:
+        file.write(rendered_page)
 
 
 def main():
@@ -16,15 +25,13 @@ def main():
         autoescape=select_autoescape(['html', 'xml'])
     )
 
-    template = env.get_template('template.html')
+    on_reload_with_args = partial(on_reload, env, books_description)
+    on_reload_with_args()
 
-    rendered_page = template.render(books_description=books_description)
+    server = Server()
+    server.watch('template.html', on_reload_with_args)
+    server.serve(root='.')
 
-    with open('index.html', 'w', encoding='utf-8') as file:
-        file.write(rendered_page)
-
-    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-    server.serve_forever()
 
 if __name__ == '__main__':
     main()
