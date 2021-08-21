@@ -7,12 +7,20 @@ from livereload import Server
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
-def on_reload(env, books_description_chunks):
+def on_reload(env, books_description_chunks_per_pages):
     template = env.get_template('template.html')
-    rendered_page = template.render(books_description_chunks=books_description_chunks)
 
-    with open('index.html', 'w', encoding='utf-8') as file:
-        file.write(rendered_page)
+    for page_index, books_description_chunks in enumerate(books_description_chunks_per_pages, 1):
+        rendered_page = template.render(books_description_chunks=books_description_chunks)
+
+        pages_folder_name = 'pages'
+        page_name = f'index{page_index}.html'
+        file_path = os.path.join(pages_folder_name, page_name)
+
+        os.makedirs(pages_folder_name, exist_ok=True)
+
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(rendered_page)
 
 
 def main():
@@ -22,13 +30,14 @@ def main():
         books_description = json.load(my_file)
 
     books_description_chunks = list(chunked(books_description, 2))
+    books_description_chunks_per_pages = list(chunked(books_description_chunks, 10))
 
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
 
-    on_reload_with_args = partial(on_reload, env, books_description_chunks)
+    on_reload_with_args = partial(on_reload, env, books_description_chunks_per_pages)
     on_reload_with_args()
 
     server = Server()
