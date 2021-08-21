@@ -10,8 +10,14 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 def on_reload(env, books_description_chunks_per_pages):
     template = env.get_template('template.html')
 
+    pages_count = len(books_description_chunks_per_pages)
+
     for page_index, books_description_chunks in enumerate(books_description_chunks_per_pages, 1):
-        rendered_page = template.render(books_description_chunks=books_description_chunks)
+        rendered_page = template.render(
+            books_description_chunks=books_description_chunks,
+            pages_count=pages_count,
+            current_page_number = page_index
+        )
 
         pages_folder_name = 'pages'
         page_name = f'index{page_index}.html'
