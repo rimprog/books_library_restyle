@@ -87,8 +87,8 @@ local_settings.py
 
 .env
 db.sqlite3
-media/
-pages/
 venv/
 src/
 index.html
+
+books_description.json
