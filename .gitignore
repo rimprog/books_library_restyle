@@ -90,5 +90,3 @@ db.sqlite3
 venv/
 src/
 index.html
-
-books_description.json
