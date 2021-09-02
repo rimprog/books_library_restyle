@@ -12,6 +12,9 @@ def on_reload(env, books_description_chunks_per_pages):
 
     pages_count = len(books_description_chunks_per_pages)
 
+    pages_folder_name = 'pages'
+    os.makedirs(pages_folder_name, exist_ok=True)
+
     for page_index, books_description_chunks in enumerate(books_description_chunks_per_pages, 1):
         rendered_page = template.render(
             books_description_chunks=books_description_chunks,
@@ -19,11 +22,8 @@ def on_reload(env, books_description_chunks_per_pages):
             current_page_number = page_index
         )
 
-        pages_folder_name = 'pages'
         page_name = f'index{page_index}.html'
         file_path = os.path.join(pages_folder_name, page_name)
-
-        os.makedirs(pages_folder_name, exist_ok=True)
 
         with open(file_path, 'w', encoding='utf-8') as file:
             file.write(rendered_page)
